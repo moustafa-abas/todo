@@ -15,7 +15,6 @@ export default function Home() {
     formState: { errors },
   } = useForm({});
   const [alert, setAlert] = useState("");
-  const [updated, setUpdated] = useState(false);
 
   const [selectedTodo, setSelectedTodo] = useState();
   useEffect(() => {
@@ -33,20 +32,18 @@ export default function Home() {
   }, [alert === "update"]);
 
   const [todos, setTodos] = useState([]);
-  const [filteredTodos, setFilteredTodos] = useState([]);
   useEffect(() => {
     localStorage.getItem("todos") === null
       ? setTodos([])
       : setTodos(JSON.parse(localStorage.getItem("todos")));
+      console.log(todos)
   }, []);
-
   const [exist, setExist] = useState(false);
   setTimeout(() => {
     exist === true ? setExist(false) : null;
   }, 2000);
 
   const [searchVal, setSearchVal] = useState("");
-  const [prevSearchVal, setPrevSearchVal] = useState("");
   useEffect(() => {
     const search = () => {
       const newTodos = JSON.parse(localStorage.getItem("todos"));
@@ -81,7 +78,8 @@ export default function Home() {
       setExist(true);
     } else {
       const newTodo = { ...data, id: Date.now() };
-      const newTodos = [newTodo, ...todos];
+      const newTodos = Array.isArray(todos) ? [newTodo, ...todos] : [newTodo];
+
       setTodos(newTodos);
       localStorage.setItem("todos", JSON.stringify(newTodos));
       reset();
@@ -103,17 +101,20 @@ export default function Home() {
     ) {
       setExist(true);
     } else {
+      const todosAfterDelete=todos.filter((todo)=>todo.id!=id)
       const newTodo = { ...data, id: Date.now() };
-      const newTodos = [newTodo, ...todos];
+      const newTodos = Array.isArray(todos) ? [newTodo, ...todosAfterDelete] : [newTodo];
+console.log(todosAfterDelete)
+console.log(newTodos)
+console.log(newTodo)
       setTodos(newTodos);
       localStorage.setItem("todos", JSON.stringify(newTodos));
       reset();
-      setAlert("");
       setExist(false);
+      setAlert('');
     }
   };
-  console.log(searchVal);
-  console.log(prevSearchVal);
+  console.log(todos)
   return (
     <div className="relative ">
       {alert !== "" ? (
@@ -354,10 +355,7 @@ export default function Home() {
                   <button
                     type="submit"
                     className=" capitalize text-sm font-semibold leading-6 px-7 py-3 text-gray-900 hover:bg-indigo-700 hover:text-white transition-all  rounded-md"
-                    onClick={() => {
-                      const deleteItem = todos.filter((todo) => todo.id != id);
-                      setTodos(deleteItem);
-                    }}
+      
                   >
                     confirm
                   </button>
@@ -614,7 +612,7 @@ export default function Home() {
           />
         </main>
         <section className="w-full overflow-x-scroll">
-          {todos.length > 0 ? (
+          {todos?.length > 0 ? (
             <table className="  table-auto w-full overflow-x-scroll my-14 ">
               <Thead />
 
@@ -686,7 +684,7 @@ export default function Home() {
                             : "border-2 border-amber-500 text-amber-500 lg:hover:border-none lg:hover:bg-amber-500 lg:hover:text-white"
                         } rounded-md py-1 px-2`}
                         onClick={() => {
-                          setSelectedTodo(todos[index]);
+                          setSelectedTodo(todo);
                           setId(todo.id);
                           setAlert("update");
                         }}
