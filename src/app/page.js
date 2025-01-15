@@ -1,5 +1,4 @@
 "use client";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Banner from "./components/Banner";
@@ -15,28 +14,15 @@ export default function Home() {
     formState: { errors },
   } = useForm({});
   const [alert, setAlert] = useState("");
+  const [update, setUpdate] = useState();
 
   const [selectedTodo, setSelectedTodo] = useState();
-  useEffect(() => {
-    if (alert === "update") {
-      setValue("name", selectedTodo?.name);
-      setValue("email", selectedTodo?.email);
-      setValue("address", selectedTodo?.address);
-      setValue("phone", selectedTodo?.phone);
-      setValue("birthDate", selectedTodo?.birthDate);
-      setValue("gender", selectedTodo?.gender);
-      setValue("level", selectedTodo?.level);
-    } else {
-      null;
-    }
-  }, [alert === "update"]);
 
-  const [todos, setTodos] = useState([]);
+      const [todos, setTodos] = useState([]);
   useEffect(() => {
     localStorage.getItem("todos") === null
       ? setTodos([])
       : setTodos(JSON.parse(localStorage.getItem("todos")));
-      console.log(todos)
   }, []);
   const [exist, setExist] = useState(false);
   setTimeout(() => {
@@ -104,17 +90,14 @@ export default function Home() {
       const todosAfterDelete=todos.filter((todo)=>todo.id!=id)
       const newTodo = { ...data, id: Date.now() };
       const newTodos = Array.isArray(todos) ? [newTodo, ...todosAfterDelete] : [newTodo];
-console.log(todosAfterDelete)
-console.log(newTodos)
-console.log(newTodo)
-      setTodos(newTodos);
       localStorage.setItem("todos", JSON.stringify(newTodos));
+      setTodos(newTodos);
       reset();
       setExist(false);
       setAlert('');
+      setUpdate(false)
     }
   };
-  console.log(todos)
   return (
     <div className="relative ">
       {alert !== "" ? (
@@ -683,10 +666,11 @@ console.log(newTodo)
                             ? "bg-amber-500 text-white lg:hover:border-2 lg:hover:bg-white lg:hover:text-amber-500 lg:hover:border-amber-500"
                             : "border-2 border-amber-500 text-amber-500 lg:hover:border-none lg:hover:bg-amber-500 lg:hover:text-white"
                         } rounded-md py-1 px-2`}
-                        onClick={() => {
-                          setSelectedTodo(todo);
-                          setId(todo.id);
-                          setAlert("update");
+                        onClick={() => {  
+                          setSelectedTodo(todo)
+                          setId(todo.id)                          
+                            setUpdate(true)
+                            setAlert("update");
                         }}
                       >
                         update
