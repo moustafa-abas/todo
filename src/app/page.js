@@ -14,31 +14,21 @@ export default function Home() {
     formState: { errors },
   } = useForm({});
   const [alert, setAlert] = useState("");
-  const [update, setUpdate] = useState();
-
   const [selectedTodo, setSelectedTodo] = useState(null);
-  useEffect(() => {
-  setValue('name',selectedTodo?.name)
-  setValue('email',selectedTodo?.email)
-  setValue('address',selectedTodo?.address)
-  setValue('birthDate',selectedTodo?.birthDate)
-  setValue('gender',selectedTodo?.gender)
-  setValue('level',selectedTodo?.level)
-  setValue('phone',selectedTodo?.phone)
-  }, [selectedTodo])
-  console.log(selectedTodo)
-      const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState([]);
+  const [exist, setExist] = useState(false);
+  const [searchVal, setSearchVal] = useState("");
+  const [id, setId] = useState();
+
   useEffect(() => {
     localStorage.getItem("todos") === null
       ? setTodos([])
       : setTodos(JSON.parse(localStorage.getItem("todos")));
   }, []);
-  const [exist, setExist] = useState(false);
   setTimeout(() => {
     exist === true ? setExist(false) : null;
   }, 2000);
 
-  const [searchVal, setSearchVal] = useState("");
   useEffect(() => {
     const search = () => {
       const newTodos = JSON.parse(localStorage.getItem("todos"));
@@ -55,7 +45,15 @@ export default function Home() {
     search();
   }, [searchVal]);
 
-  const [id, setId] = useState();
+  useEffect(() => {
+    setValue("name", selectedTodo?.name);
+    setValue("email", selectedTodo?.email);
+    setValue("address", selectedTodo?.address);
+    setValue("birthDate", selectedTodo?.birthDate);
+    setValue("gender", selectedTodo?.gender);
+    setValue("level", selectedTodo?.level);
+    setValue("phone", selectedTodo?.phone);
+  }, [selectedTodo]);
 
   const onSubmit = (data) => {
     if (
@@ -74,15 +72,14 @@ export default function Home() {
     } else {
       const newTodo = { ...data, id: Date.now() };
       var newTodos;
-      if(selectedTodo!=null){
-      const todosAfterDelete=todos.filter((todo)=>todo.id!=id)
-       newTodos=Array.isArray(todos) ? [newTodo, ...todosAfterDelete] : [newTodo]
-
-      }else{
-
+      if (selectedTodo != null) {
+        const todosAfterDelete = todos.filter((todo) => todo.id != id);
+        newTodos = Array.isArray(todos)
+          ? [newTodo, ...todosAfterDelete]
+          : [newTodo];
+      } else {
         newTodos = Array.isArray(todos) ? [newTodo, ...todos] : [newTodo];
       }
-
       setTodos(newTodos);
       localStorage.setItem("todos", JSON.stringify(newTodos));
       reset();
@@ -94,31 +91,30 @@ export default function Home() {
       {alert !== "" ? (
         <section className="absolute bottom-0   h-full w-full  bg-black bg-opacity-90 ">
           <div className="bg-white  w-full sm:w-fit p-10 rounded-2xl sticky  top-1/2 left-1/2 sm:-translate-x-1/2 -translate-y-1/2">
-                <h2 className="font-semibold text-xl capitalize mb-10 text-center">
-                  are you sure you want to delete...?
-                </h2>
-                <div className="mt-6 flex items-center justify-center gap-14">
-                  <button
-                    type="button"
-                    className="capitalize rounded-md bg-indigo-600 px-7 py-3 text-sm font-semibold  text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                    onClick={() => {
-                      const newTodos = todos.filter((todo) => todo.id !== id);
-                      setTodos(newTodos);
-                      localStorage.setItem("todos", JSON.stringify(newTodos));
-                      setAlert("");
-                    }}
-                  >
-                    confirm
-                  </button>
-                  <button
-                    type="submit"
-                    className=" capitalize text-sm font-semibold leading-6 px-7 py-3 text-gray-900 hover:bg-indigo-700 hover:text-white transition-all  rounded-md"
-                    onClick={() => setAlert("")}
-                  >
-                    cancel
-                  </button>
-                </div>
-   
+            <h2 className="font-semibold text-xl capitalize mb-10 text-center">
+              are you sure you want to delete...?
+            </h2>
+            <div className="mt-6 flex items-center justify-center gap-14">
+              <button
+                type="button"
+                className="capitalize rounded-md bg-indigo-600 px-7 py-3 text-sm font-semibold  text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={() => {
+                  const newTodos = todos.filter((todo) => todo.id !== id);
+                  setTodos(newTodos);
+                  localStorage.setItem("todos", JSON.stringify(newTodos));
+                  setAlert("");
+                }}
+              >
+                confirm
+              </button>
+              <button
+                type="submit"
+                className=" capitalize text-sm font-semibold leading-6 px-7 py-3 text-gray-900 hover:bg-indigo-700 hover:text-white transition-all  rounded-md"
+                onClick={() => setAlert("")}
+              >
+                cancel
+              </button>
+            </div>
           </div>
         </section>
       ) : null}
@@ -126,7 +122,7 @@ export default function Home() {
       <div className=" md:mx-5 mx-3   " id="form">
         <Banner />
         <main>
-          <form onSubmit={handleSubmit(onSubmit)} >
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-12">
               <div className="border-b border-gray-900/10 pb-12">
                 <div className="mt-10 grid grid-cols-1 gap-x-6 sm:gap-y-4 sm:grid-cols-6">
@@ -362,7 +358,7 @@ export default function Home() {
 
               <tbody>
                 {todos?.map((todo, index) => (
-                  <tr key={index} >
+                  <tr key={index}>
                     <th
                       className={`text-start rounded-s-lg ${
                         (index + 1) % 2 === 0 ? "bg-gray-900 text-white" : null
@@ -427,15 +423,12 @@ export default function Home() {
                             ? "bg-amber-500 text-white lg:hover:border-2 lg:hover:bg-white lg:hover:text-amber-500 lg:hover:border-amber-500"
                             : "border-2 border-amber-500 text-amber-500 lg:hover:border-amber-500 lg:hover:bg-amber-500 lg:hover:text-white"
                         } rounded-md py-1 px-2`}
-                        onClick={() => {  
-                          setSelectedTodo(todo)
-                          setId(todo.id)                          
+                        onClick={() => {
+                          setSelectedTodo(todo);
+                          setId(todo.id);
                         }}
                       >
-                        <a href="#form">
-
-                        update
-                        </a>
+                        <a href="#form">update</a>
                       </button>
                     </th>
                     <th className="font-medium px-4 ">
@@ -447,7 +440,7 @@ export default function Home() {
                         } rounded-md py-1 px-2`}
                         onClick={() => {
                           setId(todo.id);
-                          setAlert('delete')
+                          setAlert("delete");
                         }}
                       >
                         delete
