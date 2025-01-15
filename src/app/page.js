@@ -90,10 +90,10 @@ export default function Home() {
   };
 
   return (
-    <div className="relative ">
+    <div className="relative  ">
       {alert !== "" ? (
-        <section className="absolute bottom-0  h-full w-full  bg-black bg-opacity-90 ">
-          <div className="bg-white  w-full sm:w-fit p-10 rounded-2xl sticky  sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2">
+        <section className="absolute bottom-0   h-full w-full  bg-black bg-opacity-90 ">
+          <div className="bg-white  w-full sm:w-fit p-10 rounded-2xl sticky  top-1/2 left-1/2 sm:-translate-x-1/2 -translate-y-1/2">
                 <h2 className="font-semibold text-xl capitalize mb-10 text-center">
                   are you sure you want to delete...?
                 </h2>
@@ -123,10 +123,10 @@ export default function Home() {
         </section>
       ) : null}
 
-      <div className="sm:mx-20 mx-3   ">
+      <div className=" md:mx-5 mx-3   " id="form">
         <Banner />
         <main>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onSubmit)} >
             <div className="space-y-12">
               <div className="border-b border-gray-900/10 pb-12">
                 <div className="mt-10 grid grid-cols-1 gap-x-6 sm:gap-y-4 sm:grid-cols-6">
@@ -351,21 +351,20 @@ export default function Home() {
             className="text-black  sm:w-1/2 w-full sm:flex mx-3 sm:mx-auto indent-2 h-12 sm:pe-2 my-5 outline-none focus:border-indigo-800 rounded-md  focus:shadow-xl border-gray-400 border-2"
             onChange={(e) => {
               setSearchVal(e.target.value);
-              setPrevSearchVal(searchVal);
             }}
             value={searchVal}
           />
         </main>
-        <section className="w-full overflow-x-scroll">
+        <section className="w-full overflow-x-scroll scrollbar-hide">
           {todos?.length > 0 ? (
-            <table className="  table-auto w-full overflow-x-scroll my-14 ">
+            <table className="  table-auto w-full overflow-x-scroll  mb-5 sm:my-10 ">
               <Thead />
 
               <tbody>
                 {todos?.map((todo, index) => (
-                  <tr key={index}>
+                  <tr key={index} >
                     <th
-                      className={`text-start ${
+                      className={`text-start rounded-s-lg ${
                         (index + 1) % 2 === 0 ? "bg-gray-900 text-white" : null
                       } font-medium  px-3 py-3`}
                     >
@@ -403,7 +402,7 @@ export default function Home() {
                     <th
                       className={`text-start ${
                         (index + 1) % 2 === 0 ? "bg-gray-900 text-white" : null
-                      } font-medium  px-3 py-3`}
+                      } font-medium  px-2 py-3`}
                     >
                       {todo.birthDate}
                     </th>
@@ -415,7 +414,7 @@ export default function Home() {
                       {todo.gender}
                     </th>
                     <th
-                      className={`text-start ${
+                      className={`text-start rounded-e-lg ${
                         (index + 1) % 2 === 0 ? "bg-gray-900 text-white" : null
                       } font-medium  px-3 py-3`}
                     >
@@ -426,14 +425,17 @@ export default function Home() {
                         className={` ${
                           index % 2 === 0
                             ? "bg-amber-500 text-white lg:hover:border-2 lg:hover:bg-white lg:hover:text-amber-500 lg:hover:border-amber-500"
-                            : "border-2 border-amber-500 text-amber-500 lg:hover:border-none lg:hover:bg-amber-500 lg:hover:text-white"
+                            : "border-2 border-amber-500 text-amber-500 lg:hover:border-amber-500 lg:hover:bg-amber-500 lg:hover:text-white"
                         } rounded-md py-1 px-2`}
                         onClick={() => {  
                           setSelectedTodo(todo)
                           setId(todo.id)                          
                         }}
                       >
+                        <a href="#form">
+
                         update
+                        </a>
                       </button>
                     </th>
                     <th className="font-medium px-4 ">
@@ -441,10 +443,11 @@ export default function Home() {
                         className={` ${
                           index % 2 === 1
                             ? "bg-red-500 text-white lg:hover:border-2 lg:hover:bg-white lg:hover:text-red-500 lg:hover:border-red-500"
-                            : "border-2 border-red-500 text-red-500 lg:hover:border-none lg:hover:bg-red-500 lg:hover:text-white"
+                            : "border-2 border-red-500 text-red-500 lg:hover:border-red-500 lg:hover:bg-red-500 lg:hover:text-white"
                         } rounded-md py-1 px-2`}
                         onClick={() => {
                           setId(todo.id);
+                          setAlert('delete')
                         }}
                       >
                         delete
